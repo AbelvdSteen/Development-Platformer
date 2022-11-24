@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     private float lifeTime = 3f;
 
     [SerializeField] private Transform collisionCheck;
+    [SerializeField] private LayerMask enemyLayer;
 
     public int dirX;
 
@@ -22,6 +23,10 @@ public class Bullet : MonoBehaviour
 
         if (Physics2D.OverlapBox(collisionCheck.position, collisionCheck.localScale, 0)) // this will not differentiate between enemies and wall lmao sorry future me
         {
+            if (Physics2D.OverlapBox(collisionCheck.position, collisionCheck.localScale, 0, enemyLayer))
+            {
+                Debug.Log("Enemy hit!");
+            }
             Destroy(gameObject);
         }
     }
