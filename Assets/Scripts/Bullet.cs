@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
 
     [SerializeField] private Transform collisionCheck;
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask groundLayer;
 
     public int dirX;
 
@@ -21,13 +22,16 @@ public class Bullet : MonoBehaviour
     {
         transform.Translate(transform.right * dirX * speed * Time.deltaTime);
 
-        if (Physics2D.OverlapBox(collisionCheck.position, collisionCheck.localScale, 0)) // this will not differentiate between enemies and wall lmao sorry future me
+        Collider2D enemy = Physics2D.OverlapBox(transform.position, transform.localScale, 0, enemyLayer);
+
+        // Change to: enemy.GetComponent<BossScript>().Damage();
+        if (enemy != null)
         {
-            if (Physics2D.OverlapBox(collisionCheck.position, collisionCheck.localScale, 0, enemyLayer))
-            {
-                Debug.Log("Enemy hit!");
-            }
+            enemy.GetComponent<Enemy>().Die();
             Destroy(gameObject);
         }
+
+        // Makes sure the arrow gets destroyed after hitting an object if said object isn't an enemy.
+        if (Physics2D.OverlapBox(transform.position, transform.localScale, 0, groundLayer)) Destroy(gameObject);
     }
 }
